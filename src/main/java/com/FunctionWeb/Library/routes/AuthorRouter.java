@@ -4,13 +4,12 @@ import com.FunctionWeb.Library.handler.AuthorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.*;
+import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 
 
 @Configuration
@@ -21,13 +20,13 @@ public class AuthorRouter {
 
     @Bean
     public RouterFunction<ServerResponse> authorRoutes() {
-        return nest(path("/authors"),
-                route(GET("/all"), authorHandler::getAllAuthors)
-                        .andRoute(GET("/{id}"), authorHandler::getAuthorById)
-                        .andRoute(GET("/byName/{nameRegex}"), authorHandler::getAuthorsByNameRegex)
-                        .andRoute(POST("/save").and(accept(MediaType.APPLICATION_JSON)), authorHandler::saveAuthor)
-        );
+        return route()
+                .nest(path("/api/authors"), builder ->
+                        builder.GET("", authorHandler::getAllAuthors)
+                                .POST("", authorHandler::saveAuthor)
+                                .GET("/{id}", authorHandler::getAuthorById)
+                                .GET("/byNameRegex", authorHandler::getAuthorsByNameRegex))
+                .build();
     }
-
 }
 
