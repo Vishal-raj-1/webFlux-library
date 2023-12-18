@@ -22,10 +22,10 @@ public class AuthorRouter {
     public RouterFunction<ServerResponse> authorRoutes() {
         return route()
                 .nest(path("/api/authors"), builder ->
-                        builder.GET("", authorHandler::getAllAuthors)
-                                .POST("", authorHandler::saveAuthor)
+                        builder.GET("/byNameRegex", authorHandler::getAuthorsByNameRegex)
                                 .GET("/{id}", authorHandler::getAuthorById)
-                                .GET("/byNameRegex", authorHandler::getAuthorsByNameRegex))
+                                .GET("", authorHandler::getAllAuthors)
+                                .POST("", authorHandler::saveAuthor))
                 .build();
     }
 }

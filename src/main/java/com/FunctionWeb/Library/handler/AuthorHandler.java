@@ -36,8 +36,7 @@ public class AuthorHandler {
     }
 
     public Mono<ServerResponse> getAuthorsByNameRegex(ServerRequest request) {
-        String nameRegex = request.queryParam("nameRegex")
-                .orElseThrow(() -> new IllegalArgumentException("nameRegex is required"));
+        String nameRegex = request.queryParam("nameRegex").orElse("");
 
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)

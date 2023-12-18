@@ -19,16 +19,17 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 public class BookRouter {
     @Autowired
     private BookHandler bookHandler;
+
     @Bean
-    public RouterFunction<ServerResponse> bookRoutes() {
-        return nest(path("/api/books"),
-                route(GET("/"), bookHandler::getAllBooks)
-                        .andRoute(GET("/{id}"), bookHandler::getBookById)
-                        .andRoute(GET("/byGenre"), bookHandler::getBooksByGenre)
-                        .andRoute(GET("/byGenreAndCopiesAvailable"), bookHandler::getBooksByGenreAndCopiesAvailable)
-//                        .andRoute(POST("/byAuthorName").and(accept(MediaType.APPLICATION_JSON)), bookHandler.getBooksByAuthorName())
-        );
+    public RouterFunction<ServerResponse> bookRoutes(){
+        return route()
+                .nest(path("/api/books"), builder ->
+                        builder.GET("/byGenre", bookHandler::getBooksByGenre)
+                                .GET("/byGenreAndCopiesAvailable", bookHandler::getBooksByGenreAndCopiesAvailable)
+                                .GET("/byAuthorName", bookHandler::getBooksByAuthorNames)
+                                .GET("/{id}", bookHandler::getBookById)
+                                .GET("", bookHandler::getAllBooks)
+                                .POST("", bookHandler::saveBook))
+                .build();
     }
-
-
 }
